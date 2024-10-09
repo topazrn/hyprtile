@@ -2,36 +2,22 @@ import Meta from "gi://Meta";
 import Shell from "gi://Shell";
 import Clutter from "gi://Clutter";
 
-import type {
-  LayoutManager,
-  Monitor
-} from "resource:///org/gnome/shell/ui/layout.js";
-
-import { DesktopEvent, Event, Screen } from "../types/desktop.js";
 import { Rectangle } from "../types/grid.js";
-import { DispatchFn, Publisher } from "../types/observable.js";
 import { Node } from "../types/tree.js";
 import { GarbageCollection, GarbageCollector } from "../util/gc.js";
 import { UserPreferencesProvider } from "./UserPreferences.js";
 import { Container, Tile } from "../util/tile.js";
 
-// splits computed gridspec cell areas in non-dynamic and dynamic cells
-type GridSpecAreas = [dedicated: Rectangle[], dynamic: Rectangle[]];
-
-type FrameSize = { width: number; height: number };
-
 export const TitleBlacklist: RegExp[] = [
   // Desktop Icons NG (see https://github.com/HyprWM/HyprWM/issues/336#issuecomment-1804267328)
   // https://gitlab.com/rastersoft/desktop-icons-ng/-/blob/cfe944e2ce7a1d27e47b08c002cd100a1e2cb878/app/desktopManager.js#L396
   // https://gitlab.com/rastersoft/desktop-icons-ng/-/blob/cfe944e2ce7a1d27e47b08c002cd100a1e2cb878/app/desktopGrid.js#L160
-  /;BDHF$/,
+  // /;BDHF$/,
 ];
 
 export interface DesktopManagerParams {
   shell: Shell.Global;
   display: Meta.Display;
-  layoutManager: LayoutManager;
-  monitorManager: Meta.MonitorManager;
   workspaceManager: Meta.WorkspaceManager;
   userPreferences: UserPreferencesProvider;
 }
@@ -40,49 +26,79 @@ export interface DesktopManagerParams {
  * Abstracts over a multitude of Gnome APIs to provide a unified interface for
  * desktop-related actions and window manipulation.
  */
-export default class implements Publisher<DesktopEvent>, GarbageCollector {
+export default class implements GarbageCollector {
   #gc: GarbageCollection;
   #shell: Shell.Global;
   #display: Meta.Display;
-  #layoutManager: LayoutManager;
   #workspaceManager: Meta.WorkspaceManager;
   #userPreferences: UserPreferencesProvider;
-  #dispatchCallbacks: DispatchFn<DesktopEvent>[];
+  #workspaceIdx: number;
+  #monitorIdx: number;
+  #tree: {
+    [workspace: number]: {
+      [monitor: number]: Node<Tile | Container>
+    }
+  };
 
   constructor({
     shell,
     display,
-    layoutManager,
-    monitorManager,
     workspaceManager,
     userPreferences,
   }: DesktopManagerParams) {
     this.#gc = new GarbageCollection();
     this.#shell = shell;
     this.#display = display;
-    this.#layoutManager = layoutManager;
     this.#workspaceManager = workspaceManager;
     this.#userPreferences = userPreferences;
-    this.#dispatchCallbacks = [];
+    this.#workspaceIdx = workspaceManager.get_active_workspace_index();
+    this.#monitorIdx = display.get_current_monitor();
+    this.#tree = {
+      [this.#workspaceIdx]: {
+        [this.#monitorIdx]: this.#initTree()
+      }
+    };
 
-    {
-      const chid = monitorManager.connect("monitors-changed", () => {
-        this.#dispatch({ type: Event.MONITORS_CHANGED });
-      });
-      this.#gc.defer(() => monitorManager.disconnect(chid));
-    }
-    {
-      const chid = display.connect("notify::focus-window", () => {
-        this.#dispatch({ type: Event.FOCUS, target: display.focus_window });
-      });
-      this.#gc.defer(() => display.disconnect(chid));
-    }
-    {
-      const chid = layoutManager.overviewGroup.connect("notify::visible", g => {
-        this.#dispatch({ type: Event.OVERVIEW, visible: g.visible });
-      });
-      this.#gc.defer(() => layoutManager.disconnect(chid));
-    }
+    const workspaceChanged = this.#workspaceManager.connect("active-workspace-changed",
+      () => {
+        this.#workspaceIdx = this.#workspaceManager.get_active_workspace_index();
+        this.#monitorIdx = this.#display.get_current_monitor();
+
+        const tree = this.#initTree();
+
+        if (!this.#tree[this.#workspaceIdx]) {
+          this.#tree[this.#workspaceIdx] = { [this.#monitorIdx]: tree }
+        } else if (!this.#tree[this.#workspaceIdx][this.#monitorIdx]) {
+          this.#tree[this.#workspaceIdx][this.#monitorIdx] = tree;
+        }
+      }
+    );
+
+    const windowEntered = this.#display.connect("window-entered-monitor",
+      (display, _, windowNotShown) => {
+        const windowShown = windowNotShown.connect("shown",
+          (window) => {
+            display.disconnect(windowShown);
+            this.#onEntered(display, window)
+          }
+        );
+      }
+    );
+    const windowReleased = this.#display.connect("grab-op-end",
+      (display, window) => this.#onEntered(display, window)
+    );
+    const windowLeft = this.#display.connect("window-left-monitor",
+      (display, _, window) => this.#onLeft(display, window)
+    );
+    const windowGrabbed = this.#display.connect("grab-op-begin",
+      (display, window) => this.#onLeft(display, window)
+    );
+
+    this.#gc.defer(() => this.#workspaceManager.disconnect(workspaceChanged));
+    this.#gc.defer(() => this.#display.disconnect(windowEntered));
+    this.#gc.defer(() => this.#display.disconnect(windowLeft));
+    this.#gc.defer(() => this.#display.disconnect(windowGrabbed));
+    this.#gc.defer(() => this.#display.disconnect(windowReleased));
   }
 
   /**
@@ -90,120 +106,61 @@ export default class implements Publisher<DesktopEvent>, GarbageCollector {
    * on the global Gnome singletons. The instance must not be used thereafter.
    */
   release() {
-    this.#dispatchCallbacks = [];
     this.#gc.release();
   }
 
-  subscribe(fn: DispatchFn<DesktopEvent>) {
-    this.#dispatchCallbacks.push(fn);
-  }
+  autotile(options?: { specific?: { workspaceIdx: number, monitorIdx: number }, all?: boolean }) {
+    const w = this.#workspaceIdx;
+    const m = this.#monitorIdx;
 
-  /**
-   * The window that is currently in focus.
-   */
-  get focusedWindow(): Meta.Window | null {
-    // current implementation already returns null but since this is not
-    // documented, use nullish coalescing for safety.
-    return this.#display.focus_window ?? null;
-  }
+    if (options?.specific) {
+      this.#workspaceIdx = options.specific.workspaceIdx;
+      this.#monitorIdx = options.specific.monitorIdx;
+    }
 
-  /**
-   * The list of monitors that comprise the desktop.
-   */
-  get monitors(): Screen[] {
-    const monitors = this.#layoutManager.monitors;
-    const workAreas = monitors.map(m => this.#workspaceManager
-      .get_active_workspace()
-      .get_work_area_for_monitor(m.index));
-
-    return this.#layoutManager.monitors.map((m, index) => ({
-      index: m.index,
-      scale: m.geometryScale,
-      resolution: { x: m.x, y: m.y, width: m.width, height: m.height },
-      workArea: {
-        x: workAreas[index].x,
-        y: workAreas[index].y,
-        width: workAreas[index].width,
-        height: workAreas[index].height,
+    if (options?.all) {
+      for (const workspaceIdx in this.#tree) {
+        if (Object.prototype.hasOwnProperty.call(this.#tree, workspaceIdx)) {
+          const monitor = this.#tree[workspaceIdx];
+          for (const monitorIdx in monitor) {
+            if (Object.prototype.hasOwnProperty.call(monitor, monitorIdx)) {
+              this.autotile({ specific: { workspaceIdx: parseInt(workspaceIdx), monitorIdx: parseInt(monitorIdx) } })
+            }
+          }
+        }
       }
-    }));
+    } else {
+      this.#autotile();
+    }
+
+    this.#workspaceIdx = w;
+    this.#monitorIdx = m;
   }
 
-  /**
-   * The current pointer location as X/Y coordinates.
-   */
-  get pointer(): [x: number, y: number] {
-    const [x, y] = this.#shell.get_pointer();
-
-    return [x, y];
-  }
-
-  /**
-   * Applies a {@link GridSpec} to the targeted {@link Monitor.index}.
-   *
-   * The relative-sized cells of the GridSpec are mapped to the work area of the
-   * monitor and are then populated with the windows that are located on that
-   * monitor. The currently focused window gets placed into the cell with the
-   * largest area. Afterwards, the remaining non-dynamic cells are populated
-   * (randomly) with the remaining windows until either (1) no windows are left
-   * to be placed or (2) no more cells are available to place them in. In the
-   * latter case, the remaining windows are then placed in the dynamic cells of
-   * the grid, if any. Dynamic cells share their space between the windows that
-   * occupy them.
-   *
-   * @param allTree The {@link Node<Tile | Container>} to be applied.
-   */
-  autotile(tree: Node<Tile | Container>) {
-    const monitorIdx = this.#display.get_current_monitor();
-    const workArea = this.workArea(monitorIdx);
+  #autotile() {
+    const workArea = this.#workArea();
     const windows = this.#workspaceManager
-      .get_active_workspace()
+      .get_workspace_by_index(this.#workspaceIdx)!
       .list_windows()
       .filter(win => !(
         win.minimized ||
-        win.get_monitor() !== monitorIdx ||
+        win.get_monitor() !== this.#monitorIdx ||
         win.get_frame_type() !== Meta.FrameType.NORMAL ||
         TitleBlacklist.some(p => p.test(win.title ?? ""))
       ));
 
-    this.#fitTree(tree, workArea, windows);
+    this.#fitTree(this.#tree[this.#workspaceIdx][this.#monitorIdx], workArea, windows);
   }
 
-  removeId(tree: Node<Tile | Container>, id: number): Node<Tile | Container> {
-    if (tree.data instanceof Container && tree.left && tree.right) {
-      if (tree.left.data instanceof Container) tree.left = this.removeId(tree.left, id)
-      if (tree.right.data instanceof Container) tree.right = this.removeId(tree.right, id);
-
-      if (tree.left.data instanceof Tile && tree.left.data.id === id) {
-        return tree.right;
-      }
-      if (tree.right.data instanceof Tile && tree.right.data.id === id) {
-        return tree.left;
-      }
-    }
-
-    if (tree.data instanceof Tile && tree.data.id === id) {
-      tree.data = new Container("Horizontal")
-    }
-
-    return tree;
-  }
-
-  #dispatch(event: DesktopEvent) {
-    for (const cb of this.#dispatchCallbacks) {
-      cb(event);
-    }
-  }
-
-  #moveResize(target: Meta.Window, x: number, y: number, size?: FrameSize) {
+  #moveResize(target: Meta.Window, size: Rectangle) {
     target.unmaximize(Meta.MaximizeFlags.BOTH);
 
     // All internal calculations fictively operate as if the actual window frame
     // size would also incorporate the user-defined window spacing. Only when a
     // window is actually moved this spacing gets deducted.
     const spacing = this.#userPreferences.getSpacing();
-    x += spacing;
-    y += spacing;
+    size.x += spacing;
+    size.y += spacing;
 
     // As of Nov '23 the `move_resize_frame` works for almost all application
     // windows. However, a user report pointed out that for gVim, the window is
@@ -212,10 +169,10 @@ export default class implements Publisher<DesktopEvent>, GarbageCollector {
     // frame type) that could serve as an indicator for whether or not this
     // (usually redundant) call is required.
     // https://github.com/HyprWM/HyprWM/issues/336#issuecomment-1803025082
-    target.move_frame(true, x, y);
+    target.move_frame(true, size.x, size.y);
     if (size) {
       const { width: w, height: h } = size;
-      target.move_resize_frame(true, x, y, w - spacing * 2, h - spacing * 2);
+      target.move_resize_frame(true, size.x, size.y, w - spacing * 2, h - spacing * 2);
     }
   }
 
@@ -232,13 +189,12 @@ export default class implements Publisher<DesktopEvent>, GarbageCollector {
     const actorMargin = { width: actor.width - window.width, height: actor.height - window.height }
     const duration = 700;
 
-    this.#moveResize(target, x, y, { width, height });
+    this.#moveResize(target, { x, y, width, height });
 
     actor.scaleX = (window.width / width);
     actor.scaleY = (window.height / height);
     actor.translationX = (window.x - x) + ((1 - actor.scaleX) * actorMargin.width / 2);
     actor.translationY = (window.y - y) + ((1 - actor.scaleY) * actorMargin.height / 2);
-    console.log("started", target.title);
     actor.ease({
       translationX: 0,
       translationY: 0,
@@ -246,22 +202,15 @@ export default class implements Publisher<DesktopEvent>, GarbageCollector {
       scaleY: 1,
       mode: Clutter.AnimationMode.EASE_OUT_EXPO,
       duration: duration,
-      onComplete: () => {
-        // For some reason onComplete executes immediately after start.
-        // So I had to manually use setTimeout for now.
-        setTimeout(() => {
-          console.log("completed", target.title);
-        }, duration);
-      },
     })
   }
 
-  workArea(monitorIdx: number): Rectangle {
+  #workArea(): Rectangle {
     const
       inset = this.#userPreferences.getInset(),
       workArea = this.#workspaceManager
-        .get_active_workspace()
-        .get_work_area_for_monitor(monitorIdx),
+        .get_workspace_by_index(this.#workspaceIdx)!
+        .get_work_area_for_monitor(this.#monitorIdx),
       top = Math.clamp(inset.top, 0, Math.floor(workArea.height / 2)),
       bottom = Math.clamp(inset.bottom, 0, Math.floor(workArea.height / 2)),
       left = Math.clamp(inset.left, 0, Math.floor(workArea.width / 2)),
@@ -342,12 +291,61 @@ export default class implements Publisher<DesktopEvent>, GarbageCollector {
     throw new Error("Not handled", { cause: "" });
   }
 
-  pushTree(tree: Node<Tile | Container>, point: { x: number, y: number }, newTile: Tile, workArea?: Rectangle): void {
-    if (!workArea) {
-      workArea = this.workArea(this.#display.get_current_monitor());
+  #exists(tree: Node<Tile | Container>, id: number): boolean {
+    let exists = false;
+
+    if (tree.data instanceof Container && tree.left && tree.right) {
+      if (tree.left.data instanceof Container) exists = exists || this.#exists(tree.left, id)
+      if (tree.right.data instanceof Container) exists = exists || this.#exists(tree.right, id);
+
+      if (tree.left.data instanceof Tile && tree.left.data.id === id) {
+        return true;
+      }
+      if (tree.right.data instanceof Tile && tree.right.data.id === id) {
+        return true;
+      }
     }
 
-    if (!this.#pointInRectangle(point, workArea)) return;
+    if (tree.data instanceof Tile && tree.data.id === id) {
+      return true;
+    }
+
+    return exists;
+  }
+
+  #onEntered(display: Meta.Display, window: Meta.Window) {
+    if (window.windowType !== Meta.WindowType.NORMAL) return;
+
+    this.#workspaceIdx = display.get_workspace_manager().get_active_workspace_index();
+    this.#monitorIdx = display.get_current_monitor();
+
+    if (this.#exists(this.#tree[this.#workspaceIdx][this.#monitorIdx], window.get_id())) return;
+
+    this.#insert(
+      this.#tree[this.#workspaceIdx][this.#monitorIdx],
+      new Tile(window.get_id()),
+      this.#workArea()
+    );
+
+    this.autotile();
+  }
+
+  #onLeft(display: Meta.Display, window: Meta.Window) {
+    if (window.windowType !== Meta.WindowType.NORMAL) return;
+
+    this.#workspaceIdx = display.get_workspace_manager().get_active_workspace_index();
+    this.#monitorIdx = display.get_current_monitor();
+
+    this.#tree[this.#workspaceIdx][this.#monitorIdx] = this.#delete(
+      this.#tree[this.#workspaceIdx][this.#monitorIdx],
+      window.get_id(),
+    )
+
+    this.autotile();
+  }
+
+  #insert(tree: Node<Tile | Container>, newTile: Tile, workArea: Rectangle): void {
+    if (!this.#cursorInArea(workArea)) return;
 
     if (tree.data instanceof Container && !tree.left && !tree.right) {
       // Node has no window. Only possible on empty desktop.
@@ -356,13 +354,13 @@ export default class implements Publisher<DesktopEvent>, GarbageCollector {
     }
 
     if (tree.data instanceof Tile) {
-      if (!this.#pointInRectangle(point, workArea)) return;
+      if (!this.#cursorInArea(workArea)) return;
 
       const { left: leftArea, container } = this.#splitArea(workArea);
 
       const temp = tree.data;
       tree.data = container;
-      if (this.#pointInRectangle(point, leftArea)) {
+      if (this.#cursorInArea(leftArea)) {
         tree.left = { data: newTile };
         tree.right = { data: temp };
       } else {
@@ -374,13 +372,33 @@ export default class implements Publisher<DesktopEvent>, GarbageCollector {
 
     if (tree.data instanceof Container && tree.left && tree.right) {
       const { left: leftArea, right: rightArea } = this.#splitArea(workArea, tree.data);
-      this.pushTree(tree.left, point, newTile, leftArea);
-      this.pushTree(tree.right, point, newTile, rightArea);
+      this.#insert(tree.left, newTile, leftArea);
+      this.#insert(tree.right, newTile, rightArea);
       return;
     }
 
     console.error(tree);
     throw new Error("Not handled", { cause: "" });
+  }
+
+  #delete(tree: Node<Tile | Container>, id: number): Node<Tile | Container> {
+    if (tree.data instanceof Container && tree.left && tree.right) {
+      if (tree.left.data instanceof Container) tree.left = this.#delete(tree.left, id)
+      if (tree.right.data instanceof Container) tree.right = this.#delete(tree.right, id);
+
+      if (tree.left.data instanceof Tile && tree.left.data.id === id) {
+        return tree.right;
+      }
+      if (tree.right.data instanceof Tile && tree.right.data.id === id) {
+        return tree.left;
+      }
+    }
+
+    if (tree.data instanceof Tile && tree.data.id === id) {
+      tree.data = new Container("Horizontal")
+    }
+
+    return tree;
   }
 
   #splitArea(area: Rectangle, container?: Container): { left: Rectangle, right: Rectangle, container: Container } {
@@ -419,10 +437,47 @@ export default class implements Publisher<DesktopEvent>, GarbageCollector {
     return { left: leftArea, right: rightArea, container: container }
   }
 
-  #pointInRectangle(point: { x: number, y: number }, rectangle: Rectangle) {
-    return point.x >= rectangle.x &&
-      point.x <= rectangle.x + rectangle.width &&
-      point.y >= rectangle.y &&
-      point.y <= rectangle.y + rectangle.height;
+  #initTree(): Node<Tile | Container> {
+    const tree: Node<Tile | Container> = { data: new Container("Horizontal") };
+    const workArea = this.#workArea();
+
+    const windows = this.#workspaceManager
+      .get_workspace_by_index(this.#workspaceIdx)!
+      .list_windows()
+      .filter(win => !(
+        win.minimized ||
+        win.get_monitor() !== this.#monitorIdx ||
+        win.get_frame_type() !== Meta.FrameType.NORMAL ||
+        TitleBlacklist.some(p => p.test(win.title ?? ""))
+      ));
+
+    let root = tree;
+    for (let index = 0; index < windows.length; index++) {
+      const window = windows[index];
+
+      if (root.data instanceof Container) {
+        if (!root.right) {
+          root.data = new Tile(window.get_id());
+        } else {
+          root = root.right;
+        }
+      } else {
+        root.left = { data: new Tile(root.data.id) };
+        root.right = { data: new Tile(window.get_id()) };
+        root.data = new Container(index % 2 === 0 && workArea.width > workArea.height ? "Horizontal" : "Vertical");
+        root = root.right;
+      }
+    }
+
+    return tree;
+  }
+
+  #cursorInArea(rectangle: Rectangle) {
+    const [x, y, _] = this.#shell.get_pointer();
+
+    return x >= rectangle.x &&
+      x <= rectangle.x + rectangle.width &&
+      y >= rectangle.y &&
+      y <= rectangle.y + rectangle.height;
   }
 }
