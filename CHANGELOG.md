@@ -8,17 +8,17 @@ CHANGE LOG
 
 ### 60
 - New setting "auto-snap-window"
-  - When enabled, HyprWM UI automatically pre-selects a fitting size for the active window for the current grid.
+  - When enabled, HyprTile UI automatically pre-selects a fitting size for the active window for the current grid.
 - Maintenance: Fixed typo in settings (#377), add functional tests, and upgrade dependencies
 
 ### 59
 - Add support for Gnome 46 (extension is compatible without further code changes)
 
 ### 58
-- Overhauled HyprWM overlay placement logic
+- Overhauled HyprTile overlay placement logic
   - Restored old placement behavior.
-  - The HyprWM overlay is now placed in the center of the currently focused window by default.
-  - The HyprWM overlay is now hidden/closed when the Gnome workspace overview (<kbd>Super</kbd>-key) is activated.
+  - The HyprTile overlay is now placed in the center of the currently focused window by default.
+  - The HyprTile overlay is now hidden/closed when the Gnome workspace overview (<kbd>Super</kbd>-key) is activated.
   - A new setting allows to toggle between new and old placement modes, i.e., "at cursor" or "within the focused window".
 
 ### 57
@@ -45,7 +45,7 @@ New and changed functionality:
 
 ### 53
 
-- Complete rewrite. Check [PR #341](https://github.com/HyprWM/HyprWM/pull/341) for more information and breaking changes.
+- Complete rewrite. Check [PR #341](https://github.com/HyprTile/HyprTile/pull/341) for more information and breaking changes.
 - Support for Gnome 45
 
 ### 52
@@ -155,7 +155,7 @@ Changes enforced by gnome-shell policies and upgrades:
 
 ### V10
 
--   Now HyprWM follows your focus window !! Thanks to Claus Beerta he implements it in a branch.
+-   Now HyprTile follows your focus window !! Thanks to Claus Beerta he implements it in a branch.
 -   I change the implementation so that it works with  multi-screen and I also added animations.
 
 ### V9

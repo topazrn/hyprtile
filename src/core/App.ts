@@ -16,7 +16,7 @@ type StartsWith<S extends string, Prefix extends string> =
 type GeneralSettingKey = StartsWith<SettingKey, "general-">;
 
 /**
- * Represents the HyprWM extension.
+ * Represents the HyprTile extension.
  *
  * The class acts as top-level orchestrator. It is responsible to
  * (1) create required instances, e.g. for UI management and keyboard shortcuts

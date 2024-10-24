@@ -9,7 +9,7 @@ import { UserPreferencesProvider } from "./UserPreferences.js";
 import { Container, Tile } from "../util/tile.js";
 
 export const TitleBlacklist: RegExp[] = [
-  // Desktop Icons NG (see https://github.com/HyprWM/HyprWM/issues/336#issuecomment-1804267328)
+  // Desktop Icons NG (see https://github.com/gTile/gTile/issues/336#issuecomment-1804267328)
   // https://gitlab.com/rastersoft/desktop-icons-ng/-/blob/cfe944e2ce7a1d27e47b08c002cd100a1e2cb878/app/desktopManager.js#L396
   // https://gitlab.com/rastersoft/desktop-icons-ng/-/blob/cfe944e2ce7a1d27e47b08c002cd100a1e2cb878/app/desktopGrid.js#L160
   // /;BDHF$/,
@@ -168,7 +168,7 @@ export default class implements GarbageCollector {
     // doesn't seem to be any other discriminative variable (e.g. window type or
     // frame type) that could serve as an indicator for whether or not this
     // (usually redundant) call is required.
-    // https://github.com/HyprWM/HyprWM/issues/336#issuecomment-1803025082
+    // https://github.com/HyprTile/HyprTile/issues/336#issuecomment-1803025082
     target.move_frame(true, size.x, size.y);
     if (size) {
       const { width: w, height: h } = size;

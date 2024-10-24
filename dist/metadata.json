@@ -1,9 +1,9 @@
 {
-  "uuid": "HyprWM@topazrn",
-  "name": "HyprWM",
+  "uuid": "HyprTile@topazrn",
+  "name": "HyprTile",
   "description": "Tile windows on a grid",
   "shell-version": ["46", "47"],
-  "url": "https://github.com/topazrn/HyprWM",
-  "settings-schema": "org.gnome.shell.extensions.hyprwm",
+  "url": "https://github.com/topazrn/HyprTile",
+  "settings-schema": "org.gnome.shell.extensions.hyprtile",
   "version": 61
 }

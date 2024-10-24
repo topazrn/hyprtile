@@ -7,7 +7,7 @@
  * Main container
  */
 
-.hyprwm-default {
+.hyprtile-default {
     width: 320px;
     border-radius: 10px;
     background-color: rgba(40, 40, 40, 1);
@@ -19,22 +19,22 @@
  * Title bar
  */
 
-.hyprwm-default__title-container {
+.hyprtile-default__title-container {
     padding: 15px 15px 15px 15px;
 }
 
-.hyprwm-default__title {
+.hyprtile-default__title {
     font-size: 12px;
     color: rgba(238, 238, 236, 1);
     padding: 5px;
     text-align: left;
 }
 
-.hyprwm-default__close-container {
+.hyprtile-default__close-container {
     margin-right: 3px;
 }
 
-.hyprwm-default__close {
+.hyprtile-default__close {
     width: 22px;
     height: 22px;
     background-image: url("images/icons/light/32/close.png");
@@ -42,7 +42,7 @@
     border-radius: 22px;
 }
 
-.hyprwm-default__close:hover {
+.hyprtile-default__close:hover {
     background-color: rgba(238, 238, 236, 0.1);
 }
 
@@ -51,23 +51,23 @@
  * Tile container
  */
 
-.hyprwm-default__tile-container {
+.hyprtile-default__tile-container {
     padding: 10px;
     background-color: rgba(238, 238, 236, 0.1);
 }
 
-.hyprwm-default__tile-table {
+.hyprtile-default__tile-table {
     spacing-rows: 2px;
     spacing-columns: 2px;
 }
 
-.hyprwm-default__tile-table-item {
+.hyprtile-default__tile-table-item {
     background-color: rgba(238, 238, 236, 0.3);
     margin: 1px;
     border-radius: 2px;
 }
 
-.hyprwm-default__tile-table-item:activate {
+.hyprtile-default__tile-table-item:activate {
     background-color: rgba(240, 240, 240, 0.5);
 }
 
@@ -76,17 +76,17 @@
  * Preset container
  */
 
-.hyprwm-default__preset-container {
+.hyprtile-default__preset-container {
     background-color: rgba(238, 238, 236, 0.05);
     padding: 10px;
 }
 
-.hyprwm-default__preset {
+.hyprtile-default__preset {
     spacing-rows: 0px;
     spacing-columns: 2px;
 }
 
-.hyprwm-default__preset-button {
+.hyprtile-default__preset-button {
     border: 1px solid rgba(31, 31, 31, 1);
     color: rgba(238, 238, 236, 1);
     background-color: rgba(238, 238, 236, 0.1);
@@ -98,12 +98,12 @@
     height: 34px;
 }
 
-.hyprwm-default__preset-button:first-child {
+.hyprtile-default__preset-button:first-child {
     margin-left: 0;
 }
 
-.hyprwm-default__preset-button:hover,
-.hyprwm-default__preset-button:activate {
+.hyprtile-default__preset-button:hover,
+.hyprtile-default__preset-button:activate {
     background-color: rgba(238, 238, 236, 0.3);
 }
 
@@ -112,66 +112,66 @@
  * Actions container
  */
 
-.hyprwm-default__action-button--auto-close {
+.hyprtile-default__action-button--auto-close {
     background-image: url("images/icons/light/32/auto-close.png");
     background-size: 24px 24px;
     height: 32px;
     width: 32px;
 }
 
-.hyprwm-default__action-button--follow-cursor {
+.hyprtile-default__action-button--follow-cursor {
     background-image: url("images/icons/light/32/followcursor.png");
     background-size: 24px 24px;
     height: 32px;
     width: 32px;
 }
 
-.hyprwm-default__action-button--main-and-list {
+.hyprtile-default__action-button--main-and-list {
     background-image: url("images/icons/light/32/auto-tile-0.png");
     background-size: 24px 24px;
     height: 32px;
     width: 32px;
 }
 
-.hyprwm-default__action-button--two-list {
+.hyprtile-default__action-button--two-list {
     background-image: url("images/icons/light/32/auto-tile-1.png");
     background-size: 24px 24px;
     height: 32px;
     width: 32px;
 }
 
-.hyprwm-default__action-button--scale {
+.hyprtile-default__action-button--scale {
     background-image: url("images/icons/light/32/scale.png");
     background-size: 24px 24px;
     height: 32px;
     width: 32px;
 }
 
-.hyprwm-default__action {
+.hyprtile-default__action {
     spacing-rows: 0px;
     spacing-columns: 2px;
     padding: 0px 0px 15px 32px;
     margin: 15px 0 32px;
 }
 
-.hyprwm-default__action-button {
+.hyprtile-default__action-button {
     margin-right: 32px;
     height: 33px;
     border: 2px solid rgba(238,237,236,0);
 }
 
-.hyprwm-default__action-button:hover,
-.hyprwm-default__action-button:activate {
+.hyprtile-default__action-button:hover,
+.hyprtile-default__action-button:activate {
     border: 2px solid rgba(27, 106, 203, 1);
     background-color: rgba(27, 106, 203, 1);
     border-radius: 50px;
 }
 
-.hyprwm-default__action-button:hover{
+.hyprtile-default__action-button:hover{
     border: 2px solid rgba(238,237,236,0.1);
 }
 
-.hyprwm-default__grid_lines_preview {
+.hyprtile-default__grid_lines_preview {
     background-color: rgba(0,0,0,0);
     border: 1px solid rgba(217,108,59,0.8);
 }
@@ -180,7 +180,7 @@
  * Grid preview
  */
 
-.hyprwm-default__preview {
+.hyprtile-default__preview {
     background-color: rgba(238, 238, 236, 0);
     border: 2px solid rgba(238, 238, 236, 0);
     border-radius: 10px;
@@ -188,7 +188,7 @@
     z-index: 90;
 }
 
-.hyprwm-default__preview:activate {
+.hyprtile-default__preview:activate {
     background-color: rgba(238, 238, 236, 0.1);
     border: 2px solid rgba(238, 238, 236, 0.4);
     box-shadow: 0 0 3px rgba(40, 40, 40, 0.2);
@@ -199,17 +199,17 @@
  * Panel icon
  */
 
-.hyprwm-default__icon {
+.hyprtile-default__icon {
     width: 24px;
     height: 24px;
     background-image: url("images/launcher/light/16/default.png");
     background-size: 16px 16px;
 }
-.hyprwm-default__icon:hover {
+.hyprtile-default__icon:hover {
     background-image: url("images/launcher/light/16/hover.png");
 }
 
-.hyprwm-default__icon:activate {
+.hyprtile-default__icon:activate {
     background-image: url("images/launcher/light/16/active.png");
 }
 
@@ -219,7 +219,7 @@
  * Main container
  */
 
-.hyprwm-classic {
+.hyprtile-classic {
     background-color: rgba(10, 10, 10, 0.7);
     -webkit-filter: blur(2px);
     width: 320px;
@@ -231,11 +231,11 @@
   * Title bar
   */
 
-.hyprwm-classic__title-container {
+.hyprtile-classic__title-container {
     padding: 3px;
 }
 
-.hyprwm-classic__title {
+.hyprtile-classic__title {
     font-size: 12px;
     font-weight: bold;
     color: #ffffff;
@@ -243,11 +243,11 @@
     text-align: center;
 }
 
-.hyprwm-classic__close-container {
+.hyprtile-classic__close-container {
     background-color: rgba(0, 120, 255, 0);
 }
 
-.hyprwm-classic__close {
+.hyprtile-classic__close {
     width: 22px;
     height: 22px;
     background-image: url("images/icons/light/32/close.png");
@@ -255,7 +255,7 @@
     border-radius: 22px;
 }
 
-.hyprwm-classic__close:hover {
+.hyprtile-classic__close:hover {
     background-color: rgba(238, 238, 236, 0.1);
 }
 
@@ -264,19 +264,19 @@
   * Tile container
   */
 
-.hyprwm-classic__tile-container {}
+.hyprtile-classic__tile-container {}
 
-.hyprwm-classic__tile-table {
+.hyprtile-classic__tile-table {
     spacing-rows: 2px;
     spacing-columns: 2px;
 }
 
-.hyprwm-classic__tile-table-item {
+.hyprtile-classic__tile-table-item {
     background-color: rgba(240, 240, 240, 0.4);
     margin: 1px;
 }
 
-.hyprwm-classic__tile-table-item:activate {
+.hyprtile-classic__tile-table-item:activate {
     background-color: rgba(240, 240, 240, 0.8);
 }
 
@@ -285,21 +285,21 @@
   * Preset container
   */
 
-.hyprwm-classic__preset-container {
+.hyprtile-classic__preset-container {
     background-color: rgba(238, 238, 236, 0.05);
     padding: 10px;
 }
 
-.hyprwm-classic__preset {
+.hyprtile-classic__preset {
     spacing-rows: 0px;
     spacing-columns: 2px;
 }
 
-.hyprwm-classic__preset-container {
+.hyprtile-classic__preset-container {
     padding: 10px 0px 0px 0px;
 }
 
-.hyprwm-classic__preset-button {
+.hyprtile-classic__preset-button {
     background-color: rgba(0, 120, 255, 0.4);
     color: rgba(255, 255, 255, 0.4);
     border-radius: 0px;
@@ -307,8 +307,8 @@
     height: 34px;
 }
 
-.hyprwm-classic__preset-button:hover,
-.hyprwm-classic__preset-button:activate {
+.hyprtile-classic__preset-button:hover,
+.hyprtile-classic__preset-button:activate {
     background-color: rgba(0, 120, 255, 0.7);
     color: rgba(255, 255, 255, 1);
     border: 1px rgba(0, 200, 255, 0.7);
@@ -319,65 +319,65 @@
   * Actions container
   */
 
-.hyprwm-classic__action-button--auto-close {
+.hyprtile-classic__action-button--auto-close {
     background-image: url("images/icons/light/32/auto-close.png");
     background-size: 36px 36px;
     height: 36px;
     width: 36px;
 }
 
-.hyprwm-classic__action-button--follow-cursor {
+.hyprtile-classic__action-button--follow-cursor {
     background-image: url("images/icons/light/32/followcursor.png");
     background-size: 36px 36px;
     height: 36px;
     width: 36px;
 }
 
-.hyprwm-classic__action-button--main-and-list {
+.hyprtile-classic__action-button--main-and-list {
     background-image: url("images/icons/light/32/auto-tile-0.png");
     background-size: 36px 36px;
     height: 36px;
     width: 36px;
 }
 
-.hyprwm-classic__action-button--two-list {
+.hyprtile-classic__action-button--two-list {
     background-image: url("images/icons/light/32/auto-tile-1.png");
     background-size: 36px 36px;
     height: 36px;
     width: 36px;
 }
 
-.hyprwm-classic__action-button--scale {
+.hyprtile-classic__action-button--scale {
     background-image: url("images/icons/light/32/scale.png");
     background-size: 36px 36px;
     height: 36px;
     width: 36px;
 }
 
-.hyprwm-classic__action {
+.hyprtile-classic__action {
     spacing-rows: 0px;
     spacing-columns: 2px;
 }
 
-.hyprwm-classic__action-container {
+.hyprtile-classic__action-container {
     padding: 2px 0px 10px 0px;
 }
 
-.hyprwm-classic__action-button {
+.hyprtile-classic__action-button {
     background-color: rgba(0, 120, 255, 0.4);
     color: rgba(255, 255, 255, 0.4);
     border-radius: 0px;
     border: 1px rgba(0, 200, 255, 0.4);
 }
 
-.hyprwm-classic__action-button:hover,
-.hyprwm-classic__action-button:activate {
+.hyprtile-classic__action-button:hover,
+.hyprtile-classic__action-button:activate {
     background-color: rgba(0, 120, 255, 0.7);
     color: rgba(255, 255, 255, 1);
     border: 1px rgba(0, 200, 255, 0.7);
 }
 
-.hyprwm-classic__grid_lines_preview {
+.hyprtile-classic__grid_lines_preview {
     background-color: rgba(0,0,0,0);
     border: 1px solid rgba(217,108,59,0.8);
 }
@@ -387,12 +387,12 @@
   * Grid preview
   */
 
-.hyprwm-classic__preview {
+.hyprtile-classic__preview {
     background-color: rgba(241, 122, 73, 0.0);
     border: rgba(217, 108, 59, 0.0);
 }
 
-.hyprwm-classic__preview:activate {
+.hyprtile-classic__preview:activate {
     background-color: rgba(241, 122, 73, 0.4);
     border: 1px solid rgba(217, 108, 59, 0.8);
 }
@@ -402,18 +402,18 @@
   * Panel icon
   */
 
-.hyprwm-classic__icon {
+.hyprtile-classic__icon {
     width: 24px;
     height: 24px;
     background-image: url("images/launcher/light/16/default.png");
     background-size: 16px 16px;
 }
 
-.hyprwm-classic__icon:hover {
+.hyprtile-classic__icon:hover {
     background-image: url("images/launcher/light/16/hover.png");
 }
 
-.hyprwm-classic__icon:activate {
+.hyprtile-classic__icon:activate {
     background-image: url("images/launcher/light/16/active.png");
 }
 
@@ -424,7 +424,7 @@
  * Main container
  */
 
-.hyprwm-minimal-dark {
+.hyprtile-minimal-dark {
     background-color: #2c2c2c;
     -webkit-filter: blur(2px);
     width:320px;
@@ -441,22 +441,22 @@
 * Title bar
 */
 
-.hyprwm-minimal-dark__title-container {
+.hyprtile-minimal-dark__title-container {
   padding: 3px;
 }
 
-.hyprwm-minimal-dark__title {
+.hyprtile-minimal-dark__title {
     font-size: 12px;
     color: #ffffff;
     padding: .5em;
     text-align: center;
 }
 
-.hyprwm-minimal-dark__close-container {
+.hyprtile-minimal-dark__close-container {
     background-color: rgba(0,120,255,0);
 }
 
-.hyprwm-minimal-dark__close {
+.hyprtile-minimal-dark__close {
     background-size: 22px 22px;
     height: 20px;
     width: 20px;
@@ -467,7 +467,7 @@
     border-width: 1px;
 }
 
-.hyprwm-minimal-dark__close:hover {
+.hyprtile-minimal-dark__close:hover {
     background-color: #646464;
     border-color: #202020;
 }
@@ -477,21 +477,21 @@
 * Tile container
 */
 
-.hyprwm-minimal-dark__tile-container {}
+.hyprtile-minimal-dark__tile-container {}
 
-.hyprwm-minimal-dark__tile-table {
+.hyprtile-minimal-dark__tile-table {
     spacing-rows: 2px;
     spacing-columns: 2px;
     padding: 4px;
 }
 
-.hyprwm-minimal-dark__tile-table-item {
+.hyprtile-minimal-dark__tile-table-item {
     background-color: #4b4b4b;
     margin: 1px;
     border-radius: 2px;
 }
 
-.hyprwm-minimal-dark__tile-table-item:activate {
+.hyprtile-minimal-dark__tile-table-item:activate {
     background-color: #646464;
 }
 
@@ -500,19 +500,19 @@
 * Preset container
 */
 
-.hyprwm-minimal-dark__preset-container {
+.hyprtile-minimal-dark__preset-container {
 }
 
-.hyprwm-minimal-dark__preset {
+.hyprtile-minimal-dark__preset {
   spacing-rows: 0px;
   spacing-columns: 2px;
 }
 
-.hyprwm-minimal-dark__preset-container {
+.hyprtile-minimal-dark__preset-container {
   padding: 10px 5px 10px 5px;
 }
 
-.hyprwm-minimal-dark__preset-button {
+.hyprtile-minimal-dark__preset-button {
     background-color: #4b4b4b;
     border-radius: 8px;
     padding: 0 4px;
@@ -520,12 +520,12 @@
     height: 34px;
 }
 
-.hyprwm-minimal-dark__preset-button:first-child {
+.hyprtile-minimal-dark__preset-button:first-child {
     margin-left: 0;
 }
 
-.hyprwm-minimal-dark__preset-button:hover,
-.hyprwm-minimal-dark__preset-button:activate {
+.hyprtile-minimal-dark__preset-button:hover,
+.hyprtile-minimal-dark__preset-button:activate {
     background-color: #707070;
 }
 
@@ -533,57 +533,57 @@
 /**
 * Actions container
 */
-.hyprwm-minimal-dark__action-button--auto-close,
-.hyprwm-minimal-dark__action-button--follow-cursor,
-.hyprwm-minimal-dark__action-button--main-and-list,
-.hyprwm-minimal-dark__action-button--two-list{
+.hyprtile-minimal-dark__action-button--auto-close,
+.hyprtile-minimal-dark__action-button--follow-cursor,
+.hyprtile-minimal-dark__action-button--main-and-list,
+.hyprtile-minimal-dark__action-button--two-list{
     background-size: 32px 32px;
     height:34px;
     width:34px;
 }
 
-.hyprwm-minimal-dark__action-button--auto-close {
+.hyprtile-minimal-dark__action-button--auto-close {
     background-image: url("images/icons/light/32/auto-close.png");
 }
 
-.hyprwm-minimal-dark__action-button--follow-cursor {
+.hyprtile-minimal-dark__action-button--follow-cursor {
     background-image: url("images/icons/light/32/followcursor.png");
 }
 
-.hyprwm-minimal-dark__action-button--main-and-list {
+.hyprtile-minimal-dark__action-button--main-and-list {
     background-image: url("images/icons/light/32/auto-tile-0.png");
 }
 
-.hyprwm-minimal-dark__action-button--two-list {
+.hyprtile-minimal-dark__action-button--two-list {
     background-image: url("images/icons/light/32/auto-tile-1.png");
 }
 
-.hyprwm-minimal-dark__action-button--scale {
+.hyprtile-minimal-dark__action-button--scale {
     background-image: url("images/icons/dark/32/scale.png");
     background-size: 36px 36px;
     height:36px;
     width:36px;
 }
 
-.hyprwm-minimal-dark__action {
+.hyprtile-minimal-dark__action {
   spacing-rows: 0px;
   spacing-columns: 2px;
 }
 
-.hyprwm-minimal-dark__action-container {
+.hyprtile-minimal-dark__action-container {
     padding: 2px 0px 10px 0px;
     margin-bottom: 20px;
 }
 
-.hyprwm-minimal-dark__action-button {
+.hyprtile-minimal-dark__action-button {
     background-color: #4b4b4b;
     border-radius: 8px;
     margin: 4px;
     padding: 4px;
 }
 
-.hyprwm-minimal-dark__action-button:hover,
-.hyprwm-minimal-dark__action-button:activate {
+.hyprtile-minimal-dark__action-button:hover,
+.hyprtile-minimal-dark__action-button:activate {
     background-color: #707070;
 }
 
@@ -592,17 +592,17 @@
 * Grid preview
 */
 
-.hyprwm-minimal-dark__preview {
+.hyprtile-minimal-dark__preview {
     background-color: rgba(241,122,73,0.0);
     border: rgba(217,108,59,0.0);
 }
 
-.hyprwm-minimal-dark__preview:activate {
+.hyprtile-minimal-dark__preview:activate {
     background-color: rgba(241,0,0,0.4);
     border: 1px solid rgba(217,108,59,0.8);
 }
 
-.hyprwm-minimal-dark__grid_lines_preview {
+.hyprtile-minimal-dark__grid_lines_preview {
     background-color: rgba(0,0,0,0);
     border: 1px solid rgba(217,108,59,0.8);
 }
@@ -612,18 +612,18 @@
 * Panel icon
 */
 
-.hyprwm-minimal-dark__icon {
+.hyprtile-minimal-dark__icon {
   width: 24px;
   height: 24px;
   background-image: url("images/launcher/light/16/default.png");
   background-size: 16px 16px;
 }
 
-.hyprwm-minimal-dark__icon:hover {
+.hyprtile-minimal-dark__icon:hover {
   background-image: url("images/launcher/light/16/hover.png");
 }
 
-.hyprwm-minimal-dark__icon:activate {
+.hyprtile-minimal-dark__icon:activate {
   background-image: url("images/launcher/light/16/active.png");
 }
 
@@ -634,7 +634,7 @@
  * Main container
  */
 
-.hyprwm-minimal-light {
+.hyprtile-minimal-light {
     background-color: #f6f5f4;
     -webkit-filter: blur(2px);
     width:320px;
@@ -651,22 +651,22 @@
 * Title bar
 */
 
-.hyprwm-minimal-light__title-container {
+.hyprtile-minimal-light__title-container {
     padding: 3px;
 }
 
-.hyprwm-minimal-light__title {
+.hyprtile-minimal-light__title {
     font-size: 12px;
     color: #111111;
     padding: .5em;
     text-align: center;
 }
 
-.hyprwm-minimal-light__close-container {
+.hyprtile-minimal-light__close-container {
     background-color: rgba(0,120,255,0);
 }
 
-.hyprwm-minimal-light__close {
+.hyprtile-minimal-light__close {
     background-size: 22px 22px;
     height: 20px;
     width: 20px;
@@ -677,7 +677,7 @@
     border-width: 1px;
 }
 
-.hyprwm-minimal-light__close:hover {
+.hyprtile-minimal-light__close:hover {
     background-color: #cccac7;
     border-color: #cccac7;
 }
@@ -687,21 +687,21 @@
 * Tile container
 */
 
-.hyprwm-minimal-light__tile-container {}
+.hyprtile-minimal-light__tile-container {}
 
-.hyprwm-minimal-light__tile-table {
+.hyprtile-minimal-light__tile-table {
     spacing-rows: 2px;
     spacing-columns: 2px;
     padding: 4px;
   }
 
-.hyprwm-minimal-light__tile-table-item {
+.hyprtile-minimal-light__tile-table-item {
     background-color: #b1aca9;
     margin: 1px;
     border-radius: 2px;
 }
 
-.hyprwm-minimal-light__tile-table-item:activate {
+.hyprtile-minimal-light__tile-table-item:activate {
     background-color: #928f8c;
 }
 
@@ -710,19 +710,19 @@
 * Preset container
 */
 
-.hyprwm-minimal-light__preset-container {
+.hyprtile-minimal-light__preset-container {
 }
 
-.hyprwm-minimal-light__preset {
+.hyprtile-minimal-light__preset {
     spacing-rows: 0px;
     spacing-columns: 2px;
 }
 
-.hyprwm-minimal-light__preset-container {
+.hyprtile-minimal-light__preset-container {
     padding: 10px 5px 10px 5px;
 }
 
-.hyprwm-minimal-light__preset-button {
+.hyprtile-minimal-light__preset-button {
     color: #111111;
     background-color: #f7f6f6;
     border-radius: 8px;
@@ -733,12 +733,12 @@
     height: 34px;
 }
 
-.hyprwm-minimal-light__preset-button:first-child {
+.hyprtile-minimal-light__preset-button:first-child {
     margin-left: 0;
 }
 
-.hyprwm-minimal-light__preset-button:hover,
-.hyprwm-minimal-light__preset-button:activate {
+.hyprtile-minimal-light__preset-button:hover,
+.hyprtile-minimal-light__preset-button:activate {
     background-color: #e8e6e3;
 }
 
@@ -746,49 +746,49 @@
 /**
 * Actions container
 */
-.hyprwm-minimal-light__action-button--auto-close,
-.hyprwm-minimal-light__action-button--follow-cursor,
-.hyprwm-minimal-light__action-button--main-and-list,
-.hyprwm-minimal-light__action-button--two-list{
+.hyprtile-minimal-light__action-button--auto-close,
+.hyprtile-minimal-light__action-button--follow-cursor,
+.hyprtile-minimal-light__action-button--main-and-list,
+.hyprtile-minimal-light__action-button--two-list{
     background-size: 32px 32px;
     height:34px;
     width:34px;
 }
 
-.hyprwm-minimal-light__action-button--auto-close {
+.hyprtile-minimal-light__action-button--auto-close {
     background-image: url("images/icons/dark/32/auto-close.png");
 }
 
-.hyprwm-minimal-light__action-button--follow-cursor {
+.hyprtile-minimal-light__action-button--follow-cursor {
     background-image: url("images/icons/dark/32/followcursor.png");
 }
 
-.hyprwm-minimal-light__action-button--main-and-list {
+.hyprtile-minimal-light__action-button--main-and-list {
     background-image: url("images/icons/dark/32/auto-tile-0.png");
 }
 
-.hyprwm-minimal-light__action-button--two-list {
+.hyprtile-minimal-light__action-button--two-list {
     background-image: url("images/icons/dark/32/auto-tile-1.png");
 }
 
-.hyprwm-minimal-light__action-button--scale {
+.hyprtile-minimal-light__action-button--scale {
     background-image: url("images/icons/dark/32/scale.png");
     background-size: 36px 36px;
     height:36px;
     width:36px;
 }
 
-.hyprwm-minimal-light__action {
+.hyprtile-minimal-light__action {
     spacing-rows: 0px;
     spacing-columns: 2px;
 }
 
-.hyprwm-minimal-light__action-container {
+.hyprtile-minimal-light__action-container {
     padding: 2px 0px 10px 0px;
     margin-bottom: 20px;
 }
 
-.hyprwm-minimal-light__action-button {
+.hyprtile-minimal-light__action-button {
     color: #111111;
     background-color: #f7f6f6;
     border-radius: 8px;
@@ -798,12 +798,12 @@
     padding: 4px;
 }
 
-.hyprwm-minimal-light__action-button:hover,
-.hyprwm-minimal-light__action-button:activate {
+.hyprtile-minimal-light__action-button:hover,
+.hyprtile-minimal-light__action-button:activate {
     background-color: #e8e6e3;
 }
 
-.hyprwm-minimal-light__grid_lines_preview {
+.hyprtile-minimal-light__grid_lines_preview {
     background-color: rgba(0,0,0,0);
     border: 1px solid rgba(217,108,59,0.8);
 }
@@ -813,12 +813,12 @@
 * Grid preview
 */
 
-.hyprwm-minimal-light__preview {
+.hyprtile-minimal-light__preview {
     background-color: rgba(241,122,73,0.0);
     border: rgba(217,108,59,0.0);
 }
 
-.hyprwm-minimal-light__preview:activate {
+.hyprtile-minimal-light__preview:activate {
     background-color: rgba(241,122,73,0.4);
     border: 1px solid rgba(217,108,59,0.8);
 }
@@ -828,17 +828,17 @@
 * Panel icon
 */
 
-.hyprwm-minimal-light__icon {
+.hyprtile-minimal-light__icon {
     width: 24px;
     height: 24px;
     background-image: url("images/launcher/dark/16/default.png");
     background-size: 16px 16px;
 }
 
-.hyprwm-minimal-light__icon:hover {
+.hyprtile-minimal-light__icon:hover {
     background-image: url("images/launcher/dark/16/hover.png");
 }
 
-.hyprwm-minimal-light__icon:activate {
+.hyprtile-minimal-light__icon:activate {
     background-image: url("images/launcher/dark/16/active.png");
 }
