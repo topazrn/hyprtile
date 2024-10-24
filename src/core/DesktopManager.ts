@@ -195,6 +195,7 @@ export default class implements GarbageCollector {
     actor.scaleY = (window.height / height);
     actor.translationX = (window.x - x) + ((1 - actor.scaleX) * actorMargin.width / 2);
     actor.translationY = (window.y - y) + ((1 - actor.scaleY) * actorMargin.height / 2);
+    
     actor.ease({
       translationX: 0,
       translationY: 0,
