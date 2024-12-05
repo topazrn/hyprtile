@@ -2,9 +2,13 @@
   "name": "hyprtile",
   "version": "0.1.0",
   "description": "Tile GNOME windows the Hyprland way!",
-  "main": "extension.js",
+  "main": "src/extension.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepack": "git clean -qxf ':/dist' ':/out' hyprtile.dist.tgz",
+    "pack": "tsc -p tsconfig.prod.json && rm -rf dist/types",
+    "postpack": "tar -czf hyprtile.dist.tgz -C dist .",
+    "start": "gnome-extensions install -f hyprtile.dist.tgz",
+    "check": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
