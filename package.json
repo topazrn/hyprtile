@@ -1,0 +1,25 @@
+{
+  "name": "hyprtile",
+  "version": "0.1.0",
+  "description": "Tile GNOME windows the Hyprland way!",
+  "main": "extension.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/topazrn/HyprTile.git"
+  },
+  "keywords": [
+    "manager",
+    "tiling",
+    "window",
+    "hyprland"
+  ],
+  "author": "topazrn",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/topazrn/HyprTile/issues"
+  },
+  "homepage": "https://github.com/topazrn/HyprTile#readme"
+}
